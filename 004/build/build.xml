@@ -1,0 +1,101 @@
+<project default="init" basedir="..">
+
+	<property name="swf.template.file" value="swf-template.xml"/>
+	<!-- Overrided properties -->
+
+	<property name="full.src.path" value="${module.dir}/${envelope.main.as.file}"/>
+	<property name="output.swf" value="${output.dir}/${envelope.swf.file.name}"/>
+	<property name="is.use.network" value="true"/>
+	<property name="compiler.config" value="${air.config.file}"/>
+	<property name="report.file" value="${output.dir}/${report.envelope.file}"/>
+	<patternset id="swc.file.list">
+		<include name="envelope-lib.swc"/>
+		<include name="fzip.swc"/>
+		<include name="textLayout.swc"/>
+	</patternset>
+	<!-- Properties for air installer -->
+	<property name="test.dir" location="${basedir}/${debug.dir}"/>
+
+	<import file="${build.templates.dir}/${swf.template.file}"/>
+
+	<target name="distribution" depends="-build.distribution.swf, -pack.init.files, -package, -clean.pack.files"/>
+	<target name="-init.log">
+		<echo>Override -init.log</echo>
+	</target>
+	<target name="-create.test.dir">
+		<mkdir dir="${test.dir}"/>
+		<copy todir="${test.dir}">
+			<resources>
+				<file file="${envelope.content.dir}/${envelope.description.xml}"/>
+				<file file="${output.dir}/${envelope.swf.file.name}"/>
+				<file file="${output.dir}/${player.swf.file.name}"/>
+				<file file="${output.dir}/${designer.swf.file.name}"/>
+			</resources>
+		</copy>
+		<copy todir="${test.dir}/${source.dir}">
+			<fileset dir="${module.dir}/${source.dir}"/>
+		</copy>
+	</target>
+	<target name="-clean.test.dir">
+		<delete dir="${test.dir}"/>
+	</target>
+
+	<target name="-run.test">
+		<exec executable="${adl.exe}"> 
+			<arg value="${test.dir}/${envelope.description.xml}"/> 
+			<arg value="${test.dir}"/> 
+		</exec>
+	</target>
+
+	<target name="-pack.init.files">
+
+		<copy todir="${module.dir}">
+			<resources>
+				<file file="${output.dir}/${envelope.swf.file.name}"/>
+				<file file="${output.dir}/${player.swf.file.name}"/>
+				<file file="${output.dir}/${designer.swf.file.name}"/>
+				<file file="${envelope.content.dir}/${envelope.key.file}"/>
+				<file file="${envelope.content.dir}/${envelope.description.xml}"/>
+			</resources>
+		</copy>
+		<copy todir="${module.dir}/${envelope.icons.dir}">
+			<fileset dir="${envelope.content.dir}/${envelope.icons.dir}"/>
+		</copy>
+	</target>
+	<target name="-clean.pack.files">
+		<delete file="${module.dir}/${envelope.swf.file.name}"/>
+		<delete file="${module.dir}/${player.swf.file.name}"/>
+		<delete file="${module.dir}/${designer.swf.file.name}"/>
+		<delete file="${module.dir}/${envelope.description.xml}"/>
+		<delete file="${module.dir}/${envelope.key.file}"/>
+		<delete dir="${module.dir}/${envelope.icons.dir}"/>
+	</target>
+	<target name="-package"> 
+		<exec dir="${module.dir}" executable="${adt.bat}" spawn="false">
+			<!--Empaqueta--> 
+			<arg value="-package"/>
+			<!--Sertificate init type -->
+			<arg value="-storetype"/>         
+			<arg value="pkcs12"/>
+			<!--Sertificate key -->    
+			<arg value="-keystore"/>          
+			<arg value="${module.dir}/${envelope.key.file}"/>
+			<!--Sertificate password -->
+			<arg value="-storepass"/> 
+			<arg value="${envelope.key.password}"/>
+			<!--Dextination of air file-->
+			<arg value="${output.dir}/${envelope.air.file.name}"/>  
+			<!--Config xml of application-->
+			<arg value="${module.dir}/${envelope.description.xml}"/>           
+			<!--Main swf file-->
+			<arg value="${module.dir}/${envelope.swf.file.name}"/>
+			<!--Additional files -->
+			<arg value="${module.dir}/${player.swf.file.name}"/> 
+			<arg value="${module.dir}/${designer.swf.file.name}"/> 
+			<!--Additional folders -->
+			<arg value="-C"/> 
+			<arg value="."/> 
+			<arg value="${module.dir}/${envelope.icons.dir}"/> 
+		</exec>
+	</target> 
+</project>

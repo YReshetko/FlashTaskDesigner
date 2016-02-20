@@ -1,0 +1,31 @@
+<project name="build player module" default="init" basedir="..">
+	
+	<property name="swf.template.file" value="swf-template.xml"/>
+	<!-- Overrided properties -->
+	
+	<property name="full.src.path" value="${module.dir}/${player.main.as.file}"/>
+	<property name="output.swf" value="${output.dir}/${player.swf.file.name}"/>
+	<property name="is.use.network" value="false"/>
+	<property name="compiler.config" value="${flex.config.file}"/>
+	<property name="report.file" value="${output.dir}/${report.player.file}"/>
+	<patternset id="swc.file.list">
+		<include name="player-lib.swc"/>
+		<include name="Preloader.swc"/>
+		<include name="TaskConverter.swc"/>
+	</patternset>
+	<import file="${build.templates.dir}/${swf.template.file}"/>
+	
+	
+	<target name="-init.log">
+		<echo>Override -init.log</echo>
+	</target>
+	<target name="-create.test.dir">
+		<echo>Override -create.test.dir</echo>
+	</target>
+	<target name="-run.test">
+		<echo>Override -run.test</echo>
+	</target>
+	<target name="-clean.test.dir">
+		<echo>Override -clean.test.dir</echo>
+	</target>
+</project>

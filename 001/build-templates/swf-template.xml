@@ -1,0 +1,85 @@
+<project basedir=".." xmlns:antcontrib="antlib:net.sf.antcontrib">
+	<description>
+		Template for each module
+
+		Properties have to defined in each module
+		properties:
+			full.src.path 		- path to main .as file 
+			output.swf			- path to output .swf file
+			is.use.network		- boolean for using network (need false for player.swf, designer.swf)
+			compiler.config		- path to compiler config file (air-config.xml, flex-config.xml)
+			report.file			- path to report file (link_report.xml)
+			swc.file.list		- patternt set for compiling swf
+
+			module.dir			- define main build file for each module (dil current module)
+			
+	</description>
+
+	<taskdef resource="flexTasks.tasks" >
+		<classpath>
+			<pathelement path="${flex.task.jar}"/> 
+			<fileset dir="${flex.lib.dir}"> 
+				<include name="**/*.jar"/>
+			</fileset> 
+		</classpath>
+	</taskdef>
+
+	<!-- Executable targets, set target name to -Dtarget -->
+	<target name="init" depends="-init.log"/>
+	<target name="test" depends="-build.debug.swf, -create.test.dir, -run.test, -clean.test.dir"/>
+	<target name="just.test" depends="-create.test.dir, -run.test, -clean.test.dir"/>
+	<target name="distribution" depends="-build.distribution.swf"/>
+
+
+
+	<target name="-build.swf.file" description="Build swf file">
+		<mxmlc 	file="${full.src.path}" 
+				output="${output.swf}"
+				debug="${is.debug}" 
+				incremental="false"
+				strict="false"
+				accessible="true"
+				static-link-runtime-shared-libraries="true"
+				actionscript-file-encoding="UTF-8"                                          
+                maxmemory="1024m"
+				use-network="${is.use.network}"
+				link-report="${report.file}"
+				keep-generated-actionscript="false">
+			<!--use-network="false" link-report="link_report.xml"-->
+			<!-- Get default compiler options. -->                  
+			<load-config filename="${compiler.config}"/>
+			<source-path path-element="${flex.frameworks.dir}"/>
+			<source-path path-element="${module.dir}" />
+			<optimize>true</optimize>
+			<target-player>20.0</target-player>
+			<compiler.library-path dir="${lib.dir}" append="true">
+				<patternset refid="swc.file.list"/>
+			</compiler.library-path> 
+		</mxmlc>
+	</target>
+	<target name="-build.debug.swf">
+		<property name="is.debug" value="true"/>
+		<antcall target="-build.swf.file"/>
+	</target>
+	<target name="-build.distribution.swf">
+		<property name="is.debug" value="false"/>
+		<antcall target="-build.swf.file"/>
+	</target>
+
+	<!--
+		Override thees trgets for each module
+	-->
+	<target name="-init.log">
+		<echo>WARNING! Run default target -init.log</echo>
+	</target>
+	<target name="-create.test.dir">
+		<echo>WARNING! Run default target -create.test.dir</echo>
+	</target>
+	<target name="-run.test">
+		<echo>WARNING! Run default target -run.test</echo>
+	</target>
+	<target name="-clean.test.dir">
+		<echo>WARNING! Run default target -clean.test.dir</echo>
+	</target>
+
+</project>
