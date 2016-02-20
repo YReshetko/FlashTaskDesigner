@@ -65,6 +65,8 @@
 		}
 		public function drawTo(i:int, j:int):void{
 			if(!isCorrectIndexis(currentI+i, currentJ+j)) return;
+            var x:Number;
+            var y:Number;
 			if(!isTurtle){
 				var startObject:SectorIndex = new SectorIndex(currentI, currentJ);
 				currentI += i;
@@ -74,8 +76,8 @@
 				(sectors[endObject.i][endObject.j] as SystemSector).addConnection(startObject);
 				(sectors[startObject.i][startObject.j] as SystemSector).addConnection(endObject);
 				
-				var x:Number = sectors[currentI][currentJ].x;
-				var y:Number = sectors[currentI][currentJ].y;
+				x = sectors[currentI][currentJ].x;
+				y = sectors[currentI][currentJ].y;
 				drawContainer.graphics.lineTo(x, y);
 				(robot as Sprite).x = x;
 				(robot as Sprite).y = y;
@@ -89,8 +91,8 @@
 				//(sectors[endObject.i][endObject.j] as SystemSector).addConnection(startObject);
 				//(sectors[startObject.i][startObject.j] as SystemSector).addConnection(endObject);
 				
-				var x:Number = sectors[currentI][currentJ].x;
-				var y:Number = sectors[currentI][currentJ].y;
+				x = sectors[currentI][currentJ].x;
+				y = sectors[currentI][currentJ].y;
 				drawContainer.graphics.moveTo(x, y);
 				(robot as Sprite).x = x;
 				(robot as Sprite).y = y;

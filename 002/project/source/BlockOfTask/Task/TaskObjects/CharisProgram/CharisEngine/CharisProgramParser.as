@@ -110,7 +110,7 @@
 		}
 		private function parse():void{
 			programText = replaceAll(programText, "[\r\n]+", "\n");
-			programText = replaceAll(programText, "\{.*\}", "")
+			programText = replaceAll(programText, "\{.*\}", "");
 			programText = replaceAll(programText, "//.*\n", "\n");
 			
 			//programText = replaceAll(programText, "\/\*[\n\w\d\s\r\b;:\*\+@\$#йцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ-]*\*\/", "\n");

@@ -589,7 +589,7 @@
 		}
 		private function checkIndexInArray(array:Array, index:int):Boolean{
 			var i:int;
-			var j:int;
+			var l:int;
 			l = array.length;
 			for(i=0;i<l;i++){
 				if(array[i]-1 == index) return true;
