@@ -25,7 +25,6 @@
 	</taskdef>
 
 	<!-- Executable targets, set target name to -Dtarget -->
-	<target name="init" depends="-init.log"/>
 	<target name="test" depends="-build.debug.swf, -create.test.dir, -run.test, -clean.test.dir"/>
 	<target name="just.test" depends="-create.test.dir, -run.test, -clean.test.dir"/>
 	<target name="distribution" depends="-build.distribution.swf"/>
@@ -33,6 +32,7 @@
 
 
 	<target name="-build.swf.file" description="Build swf file">
+		<echo>Module main file - ${full.src.path}</echo>
 		<mxmlc 	file="${full.src.path}" 
 				output="${output.swf}"
 				debug="${is.debug}" 
@@ -49,7 +49,7 @@
 			<!-- Get default compiler options. -->                  
 			<load-config filename="${compiler.config}"/>
 			<source-path path-element="${flex.frameworks.dir}"/>
-			<source-path path-element="${module.dir}" />
+			<source-path path-element="${module.dir}/${project.dir}" />
 			<optimize>true</optimize>
 			<target-player>20.0</target-player>
 			<compiler.library-path dir="${lib.dir}" append="true">
@@ -69,9 +69,6 @@
 	<!--
 		Override thees trgets for each module
 	-->
-	<target name="-init.log">
-		<echo>WARNING! Run default target -init.log</echo>
-	</target>
 	<target name="-create.test.dir">
 		<echo>WARNING! Run default target -create.test.dir</echo>
 	</target>

@@ -14,10 +14,6 @@
 	</patternset>
 	<import file="${build.templates.dir}/${swf.template.file}"/>
 	
-	
-	<target name="-init.log">
-		<echo>Override -init.log</echo>
-	</target>
 	<target name="-create.test.dir">
 		<echo>Override -create.test.dir</echo>
 	</target>
