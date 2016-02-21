@@ -27,7 +27,7 @@
 		private var programText:String;
 		private var oneLineProgram:String;
 		
-		private var simpleCommands:Array = [{pattern:"left", 			altPattern:"l",   command:new LeftRC()			},
+		/*private var simpleCommands:Array = [{pattern:"left", 			altPattern:"l",   command:new LeftRC()			},
 											{pattern:"right", 			altPattern:"r",   command:new RightRC()			},
 											{pattern:"up", 				altPattern:"u",   command:new UpRC()			},
 											{pattern:"down", 			altPattern:"d",   command:new DownRC()			},
@@ -47,7 +47,7 @@
 											{pattern:"jumpzero", 		altPattern:"jz",  command:new JumpZeroRC()		},
 											{pattern:"bar", 			altPattern:"b",   command:new BarRC()			},
 											{pattern:"worm", 			altPattern:"w",   command:new WormRC()			},
-											{pattern:"turtle", 			altPattern:"t",   command:new TurtleRC()		}];
+											{pattern:"turtle", 			altPattern:"t",   command:new TurtleRC()		}];       */
 		
 		public function CharisProgramParser(input:String) {
 			programText = input;
@@ -76,7 +76,7 @@
 			var out:Vector.<IRobotCommand> = new Vector.<IRobotCommand>();
 			var stringCommands:Vector.<String> = array;
 			var currentCommand:IRobotCommand;
-			var i:int;
+			/*var i:int;
 			var j:int;
 			var l:int;
 			var k:int;
@@ -110,7 +110,21 @@
 						break;
 					}
 				}
-			}
+			}*/
+            var currentPattern:String;
+            var numIteration:int;
+            var i:int;
+            var l:int;
+            l = stringCommands.length;
+
+            for(i=0;i<l;i++){
+                currentPattern = stringCommands[i];
+                if(currentPattern.indexOf("(")!=-1){
+
+                }else{
+
+                }
+            }
 			return out;
 		}
 		

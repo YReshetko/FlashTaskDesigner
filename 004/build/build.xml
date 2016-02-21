@@ -33,6 +33,9 @@
 		<copy todir="${test.dir}/${source.dir}">
 			<fileset dir="${module.dir}/${source.dir}"/>
 		</copy>
+		<copy todir="${test.dir}/${out.swf.modules.dir}">
+			<fileset dir="${output.dir}/${out.swf.modules.dir}"/>
+		</copy>
 	</target>
 	<target name="-clean.test.dir">
 		<delete dir="${test.dir}"/>
@@ -59,6 +62,9 @@
 		<copy todir="${module.dir}/${envelope.icons.dir}">
 			<fileset dir="${envelope.content.dir}/${envelope.icons.dir}"/>
 		</copy>
+		<copy todir="${module.dir}/${out.swf.modules.dir}">
+			<fileset dir="${output.dir}/${out.swf.modules.dir}"/>
+		</copy>
 	</target>
 	<target name="-clean.pack.files">
 		<delete file="${module.dir}/${envelope.swf.file.name}"/>
@@ -67,6 +73,7 @@
 		<delete file="${module.dir}/${envelope.description.xml}"/>
 		<delete file="${module.dir}/${envelope.key.file}"/>
 		<delete dir="${module.dir}/${envelope.icons.dir}"/>
+		<delete dir="${module.dir}/${out.swf.modules.dir}"/>
 	</target>
 	<target name="-package"> 
 		<exec dir="${module.dir}" executable="${adt.bat}" spawn="false">
@@ -81,7 +88,7 @@
 			<!--Sertificate password -->
 			<arg value="-storepass"/> 
 			<arg value="${envelope.key.password}"/>
-			<!--Dextination of air file-->
+			<!--Destination of air file-->
 			<arg value="${output.dir}/${envelope.air.file.name}"/>  
 			<!--Config xml of application-->
 			<arg value="${module.dir}/${envelope.description.xml}"/>           
@@ -94,6 +101,9 @@
 			<arg value="-C"/> 
 			<arg value="."/> 
 			<arg value="${module.dir}/${envelope.icons.dir}"/> 
+			<arg value="-C"/> 
+			<arg value="."/> 
+			<arg value="${module.dir}/${out.swf.modules.dir}"/> 
 		</exec>
 	</target> 
 </project>

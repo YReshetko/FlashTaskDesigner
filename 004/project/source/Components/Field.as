@@ -101,9 +101,13 @@
 		override public function set width(value:Number):void{
 			super.width = value;
 		}
-		/*public function set color(value:uint):void{
+		public function set color(value:uint):void{
 			super.backgroundColor = value
-		}*/
+		}
+        public function get color():uint{
+            return super.backgroundColor;
+        }
+
 		public function setFocus():void{
 			MainEnvelope.STAGE.focus = this as InteractiveObject;
 		}

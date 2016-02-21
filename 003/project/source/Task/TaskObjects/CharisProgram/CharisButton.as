@@ -20,6 +20,9 @@
 			clip = sample;
 			super.addChild(clip);
 		}
+        public function get button():*{
+            return clip;
+        }
 		override public function set name(text:String):void{
 			label = text;
 		}

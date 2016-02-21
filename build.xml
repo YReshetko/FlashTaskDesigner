@@ -3,9 +3,18 @@
 		Main build file for whole project
 	</description>
 
+	<property name="module.dir.contant" value="001"/>
+	<property name="module.dir.player" value="002"/>
+	<property name="module.dir.designer" value="003"/>
+	<property name="module.dir.envelope" value="004"/>
+	<property name="module.dir.pazzle" value="005"/>
+	<property name="module.dir.listing" value="006"/>
+	<property name="module.dir.cube" value="007"/>
+	<property name="module.dir.analogy" value="008"/>
 	<!-- Modules properties, change this part to add modules and changing content dir-->
-	<property name="contant.module.name" value="001"/>
-	<property name="distribution.modules" value="002,003,004"/>
+	<property name="contant.module.name" value="${module.dir.contant}"/>
+	<property name="distribution.modules" value="${module.dir.player},${module.dir.designer},${module.dir.pazzle},${module.dir.listing},${module.dir.cube},${module.dir.analogy},${module.dir.envelope}"/>
+	
 	<!-- Dir properties -->
 	<property name="contant.module.dir" location="${basedir}/${contant.module.name}"/>
 	<property name="lib.dir" location="${contant.module.dir}/lib"/>
@@ -42,14 +51,27 @@
 			</sequential>
 		</antcontrib:for>
 	</target>
+	
 	<target name="-build.player">
-		<call.target module.number="002" run.target="distribution"/>
+		<call.target module.number="${module.dir.player}" run.target="distribution"/>
 	</target>
 	<target name="-build.designer">
-		<call.target module.number="003" run.target="distribution"/>
+		<call.target module.number="${module.dir.designer}" run.target="distribution"/>
 	</target>
 	<target name="-build.envelope">
-		<call.target module.number="004" run.target="distribution"/>
+		<call.target module.number="${module.dir.envelope}" run.target="distribution"/>
+	</target>
+	<target name="-build.pazzle">
+		<call.target module.number="${module.dir.pazzle}" run.target="distribution"/>
+	</target>
+	<target name="-build.listing">
+		<call.target module.number="${module.dir.listing}" run.target="distribution"/>
+	</target>
+	<target name="-build.cube">
+		<call.target module.number="${module.dir.cube}" run.target="distribution"/>
+	</target>
+	<target name="-build.analogy">
+		<call.target module.number="${module.dir.analogy}" run.target="distribution"/>
 	</target>
 	
 	<target name="-debug.all">
@@ -60,7 +82,7 @@
 		</antcontrib:for>
 	</target>
 	<target name="-debug.envelope">
-		<call.target module.number="004" run.target="test"/>
+		<call.target module.number="${module.dir.envelope}" run.target="test"/>
 	</target>
 	
 	<target name="-init" depends="-make.out.dir, -init.logger"/>
@@ -68,6 +90,10 @@
 	<target name="build.player" depends="-init, -build.player"/>
 	<target name="build.designer" depends="-init, -build.designer"/>
 	<target name="build.envelope" depends="-init, -build.envelope"/>
+	<target name="build.pazzle" depends="-init, -build.pazzle"/>
+	<target name="build.listing" depends="-init, -build.listing"/>
+	<target name="build.cube" depends="-init, -build.cube"/>
+	<target name="build.analogy" depends="-init, -build.analogy"/>
 	
 	<target name="debug" depends="-init, -debug.all"/>
 	<target name="debug.envelope" depends="-init, -debug.envelope"/>
