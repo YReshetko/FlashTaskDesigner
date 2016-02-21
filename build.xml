@@ -3,31 +3,30 @@
 		Main build file for whole project
 	</description>
 
-	<property name="module.dir.contant" value="001"/>
-	<property name="module.dir.player" value="002"/>
-	<property name="module.dir.designer" value="003"/>
-	<property name="module.dir.envelope" value="004"/>
-	<property name="module.dir.pazzle" value="005"/>
-	<property name="module.dir.listing" value="006"/>
-	<property name="module.dir.cube" value="007"/>
-	<property name="module.dir.analogy" value="008"/>
+	<!-- Define modules for build -->
+	<property name="module.dir.contant" 	value="001"/>
+	<property name="module.dir.player" 		value="002"/>
+	<property name="module.dir.designer" 	value="003"/>
+	<property name="module.dir.envelope" 	value="004"/>
+	<property name="module.dir.pazzle" 		value="005"/>
+	<property name="module.dir.listing" 	value="006"/>
+	<property name="module.dir.cube" 		value="007"/>
+	<property name="module.dir.analogy" 	value="008"/>
 	<!-- Modules properties, change this part to add modules and changing content dir-->
 	<property name="contant.module.name" value="${module.dir.contant}"/>
-	<property name="distribution.modules" value="${module.dir.player},${module.dir.designer},${module.dir.pazzle},${module.dir.listing},${module.dir.cube},${module.dir.analogy},${module.dir.envelope}"/>
-	
+	<property name="main.system.list" value="${module.dir.player},${module.dir.designer},${module.dir.envelope}"/>
+	<property name="swf.modules.list" value="${module.dir.pazzle},${module.dir.listing},${module.dir.cube},${module.dir.analogy}"/>
 	<!-- Dir properties -->
 	<property name="contant.module.dir" location="${basedir}/${contant.module.name}"/>
 	<property name="lib.dir" location="${contant.module.dir}/lib"/>
 	<property name="envelope.content.dir" location="${contant.module.dir}/envelope-content"/>
 	<property name="build.templates.dir" location="${contant.module.dir}/build-templates"/>
 	<property name="output.dir" location="${basedir}/out"/>
-
+	<!-- Load common property file from content module-->
 	<property file="${build.templates.dir}/build.properties"/>
 
-	<property name="build.dir" value="build"/>
-	<property name="log.file.name" value="build-log.txt"/>
-
-	<macrodef name="call.target">
+	<!-- Common macroces -->
+	<macrodef name="call.target" description="Run ${run.target} in module ${module.number}">
 		<attribute name="module.number"/>
 		<attribute name="run.target"/>
 		<sequential>
@@ -36,22 +35,39 @@
 			</ant>
 		</sequential>
 	</macrodef>
-
-	<target name="-make.out.dir">
+	<macrodef name="call.list.target" description="Run ${target} in each module in ${list}">
+		<attribute name="list"/>
+		<attribute name="target"/>
+		<sequential>
+			<antcontrib:for list="@{list}" param="module">
+				<sequential>
+					<call.target module.number="@{module}" run.target="@{target}"/>
+				</sequential>
+			</antcontrib:for>
+		</sequential>
+	</macrodef>
+	
+	<!-- Common targets -->
+	<target name="-make.out.dir" description="Make output dir in the root of the project (out)">
 		<mkdir dir="${output.dir}"/>
 	</target>
-	<target name="-init.logger">
+	<target name="-init.logger" description="Init logfile of the build in out folder (build-log.txt)">
 		<record name="${output.dir}/${log.file.name}" action="start"/>
 	</target>
-	
-	<target name="-build.all">
-		<antcontrib:for list="${distribution.modules}" param="module">
-			<sequential>
-				<call.target module.number="@{module}" run.target="distribution"/>
-			</sequential>
-		</antcontrib:for>
+
+	<!-- Distribution targets -->
+	<target name="-build.all" description="Build all modules ant create air install file">
+		<antcall target="-build.modules"/>
+		<antcall target="-build.main"/>
 	</target>
-	
+	<target name="-build.main" description="Build player, designer and envelope modules">
+		<call.list.target list="${main.system.list}" target="distribution"/>
+	</target>
+	<target name="-build.modules" description="Build just swf additional modules">
+		<call.list.target list="${swf.modules.list}" target="distribution"/>
+	</target>
+
+	<!-- Build single module -->
 	<target name="-build.player">
 		<call.target module.number="${module.dir.player}" run.target="distribution"/>
 	</target>
@@ -73,28 +89,64 @@
 	<target name="-build.analogy">
 		<call.target module.number="${module.dir.analogy}" run.target="distribution"/>
 	</target>
-	
-	<target name="-debug.all">
-		<antcontrib:for list="${distribution.modules}" param="module">
-			<sequential>
-				<call.target module.number="@{module}" run.target="test"/>
-			</sequential>
-		</antcontrib:for>
+
+	<!--Debug targets -->
+	<target name="-debug.all" description="Build all modules in debug mode and run Envelope in debud mode">
+		<antcall target="-debug.modules"/>
+		<antcall target="-debug.main"/>
 	</target>
-	<target name="-debug.envelope">
+	<target name="-debug.main" description="Build main (player, designer, envelope) modules in debug mode and run Envelope in debud mode">
+		<call.list.target list="${main.system.list}" target="test"/>
+	</target>
+	<target name="-debug.modules" description="Build additional modules in debug mode">
+		<call.list.target list="${swf.modules.list}" target="test"/>
+	</target>
+	
+	<target name="-debug.envelope" description="Build envelope module and run Envelope in debud mode">
 		<call.target module.number="${module.dir.envelope}" run.target="test"/>
 	</target>
+
+	<!-- Init target -->
+	<target name="-init" depends="-make.out.dir, -init.logger" description="Init output flder and logger"/>
+	<target name="init" depends="-init" description="Default target - description of main targets">
+		<echo message="Target description"/>
+		<echo message="Use: ant target.name"/>
+		<echo/>
+		<echo message="Distribution targets"/>
+		<echo/>
+		<echo>build             - Build all modules ant create air install file</echo>
+		<echo>build.main        - Build player, designer and envelope modules</echo>
+		<echo>build.modules     - Build just swf additional modules</echo>
+		<echo>build.player      - Build just player module</echo>
+		<echo>build.designer    - Build just designer module</echo>
+		<echo>build.envelope    - Build just envelope module</echo>
+		<echo>build.pazzle      - Build just pazzle module</echo>
+		<echo>build.listing     - Build just listing module</echo>
+		<echo>build.cube        - Build just cube module</echo>
+		<echo>build.analogy     - Build just analogy module</echo>
+		<echo/>
+		<echo message="Debug targets"/>
+		<echo/>
+		<echo>debug             - Build all modules in debug mode and run Envelope in debud mode</echo>
+		<echo>debug.main        - Build main (player, designer, envelope) modules in debug mode and run Envelope in debud mode</echo>
+		<echo>debug.modules     - Build additional modules in debug mode</echo>
+		<echo>debug.envelope    - Build envelope module and run Envelope in debud mode</echo>
+	</target> 
 	
-	<target name="-init" depends="-make.out.dir, -init.logger"/>
-	<target name="build" depends="-init, -build.all"/>
-	<target name="build.player" depends="-init, -build.player"/>
-	<target name="build.designer" depends="-init, -build.designer"/>
-	<target name="build.envelope" depends="-init, -build.envelope"/>
-	<target name="build.pazzle" depends="-init, -build.pazzle"/>
-	<target name="build.listing" depends="-init, -build.listing"/>
-	<target name="build.cube" depends="-init, -build.cube"/>
-	<target name="build.analogy" depends="-init, -build.analogy"/>
-	
-	<target name="debug" depends="-init, -debug.all"/>
-	<target name="debug.envelope" depends="-init, -debug.envelope"/>
+	<!-- Targets to run (use just these targets)-->
+	<target name="build" 			depends="-init, -build.all"/>
+	<target name="build.main" 		depends="-init, -build.main"/>
+	<target name="build.modules" 	depends="-init, -build.modules"/>
+	<target name="build.player" 	depends="-init, -build.player"/>
+	<target name="build.designer" 	depends="-init, -build.designer"/>
+	<target name="build.envelope" 	depends="-init, -build.envelope"/>
+	<target name="build.pazzle" 	depends="-init, -build.pazzle"/>
+	<target name="build.listing" 	depends="-init, -build.listing"/>
+	<target name="build.cube" 		depends="-init, -build.cube"/>
+	<target name="build.analogy" 	depends="-init, -build.analogy"/>
+
+	<target name="debug" 			depends="-init, -debug.all"/>
+	<target name="debug.main" 		depends="-init, -debug.main"/>
+	<target name="debug.modules" 	depends="-init, -debug.modules"/>
+	<target name="debug.envelope" 	depends="-init, -debug.envelope"/>
 </project>
