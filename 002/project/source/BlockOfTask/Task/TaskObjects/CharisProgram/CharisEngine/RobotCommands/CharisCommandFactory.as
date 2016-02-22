@@ -1,8 +1,7 @@
-package source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands {
-import flash.utils.getDefinitionByName;
+package source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands {
 import flash.utils.getQualifiedClassName;
 
-import source.Task.TaskObjects.CharisProgram.CharisButton;
+import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisButton;
 
 public class CharisCommandFactory {
         private static const simpleCommands:Array = [

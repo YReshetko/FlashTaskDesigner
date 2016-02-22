@@ -1,5 +1,6 @@
 ﻿package source.Task.TaskObjects.CharisProgram.CharisEngine {
-	import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.LeftRC;
+import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.CharisCommandFactory;
+import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.LeftRC;
 	import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.RightRC;
 	import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.UpRC;
 	import source.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.DownRC;
@@ -76,53 +77,27 @@
 			var out:Vector.<IRobotCommand> = new Vector.<IRobotCommand>();
 			var stringCommands:Vector.<String> = array;
 			var currentCommand:IRobotCommand;
-			/*var i:int;
-			var j:int;
-			var l:int;
-			var k:int;
-			var pattern:RegExp;
-			var altPattern:RegExp;
-			var sPattern:RegExp;
-			var sAltPattern:RegExp;
-			var flag:Boolean;
-			k = stringCommands.length;
-			l = simpleCommands.length;
-			trace(this + "stringCommands.length = " + k);
-			trace(this + "simpleCommands.length = " + l);
-			for(j=0;j<k;j++){
-				trace(this + " Current command = " + stringCommands[j]);
-				for(i=0;i<l;i++){
-					pattern = new RegExp("\\b"+simpleCommands[i].pattern+"\\b", "gi");
-					sPattern = new RegExp("\\b"+simpleCommands[i].pattern+"S\\b", "gi");
-					altPattern = new RegExp("\\b"+simpleCommands[i].altPattern+"\\b", "gi");
-					sAltPattern = new RegExp("\\b"+simpleCommands[i].altPattern+"S\\b", "gi");
-					flag = pattern.test(stringCommands[j]) || altPattern.test(stringCommands[j]) ||
-					       sPattern.test(stringCommands[j]) || sAltPattern.test(stringCommands[j]);
-					if(flag){
-						trace(this + " flag = true");
-						var cmd:Vector.<IRobotCommand> = getCommandsByString(stringCommands[j], simpleCommands[i].command as IRobotCommand);
-						while(cmd.length>0){
-							currentCommand = cmd.pop();
-							trace(this + " current commnad = " + currentCommand);
-							currentCommand.robot = robot;
-							out.push(currentCommand);
-						}
-						break;
-					}
-				}
-			}*/
             var currentPattern:String;
             var numIteration:int;
             var i:int;
             var l:int;
+            var j:int;
+            var k:int;
             l = stringCommands.length;
 
             for(i=0;i<l;i++){
                 currentPattern = stringCommands[i];
                 if(currentPattern.indexOf("(")!=-1){
-
+                    numIteration = parseInt(getSubString("(", ")", currentPattern));
+                    currentPattern = cutSubString("(", ")", currentPattern);
                 }else{
-
+                    numIteration = 1;
+                }
+                for(j=0;j<numIteration;j++){
+                    currentCommand = CharisCommandFactory.getCommandByPattern(currentPattern);
+                    if(currentCommand == null) break;
+                    currentCommand.robot = robot;
+                    out.push(currentCommand);
                 }
             }
 			return out;

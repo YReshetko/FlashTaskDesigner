@@ -31,21 +31,16 @@
 
 
 
-	<target name="-build.swf.file" description="Build swf file">
+	<target name="-build.swf.file" description="Build swf file"> <!-- incremental="false", accessible="true", static-link-runtime-shared-libraries="true", keep-generated-actionscript="false"-->
 		<echo>Module main file - ${full.src.path}</echo>
 		<mxmlc 	file="${full.src.path}" 
 				output="${output.swf}"
 				debug="${is.debug}" 
-				incremental="false"
 				strict="false"
-				accessible="true"
-				static-link-runtime-shared-libraries="true"
 				actionscript-file-encoding="UTF-8"                                          
                 maxmemory="1024m"
 				use-network="${is.use.network}"
-				link-report="${report.file}"
-				keep-generated-actionscript="false">
-			<!--use-network="false" link-report="link_report.xml"-->
+				link-report="${report.file}">
 			<!-- Get default compiler options. -->                  
 			<load-config filename="${compiler.config}"/>
 			<source-path path-element="${flex.frameworks.dir}"/>

@@ -2,7 +2,9 @@
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;	
 	import flash.events.Event;
-	import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.LeftRC;
+
+    import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.CharisCommandFactory;
+    import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.LeftRC;
 	import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.RightRC;
 	import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.DownRC;
 	import source.BlockOfTask.Task.TaskObjects.CharisProgram.CharisEngine.RobotCommands.UpRC;
@@ -63,7 +65,13 @@
 			initHandlers();
 		}
 		public function setAlpha(value:Number):void{
-			clip.background.alpha = value;
+            trace(this + " - current clip = " + clip);
+            try{
+                clip.background.alpha = value;
+            } catch (error:TypeError){
+                trace(error);
+            }
+
 		}
 		public function set button(sample:*):void{
 			while(super.numChildren>0){
@@ -74,6 +82,9 @@
 			Figure.insertRect(selectSprite, (clip as MovieClip).width, (clip as MovieClip).height, 1, 0, 0, 0.4, 0x00FF00);
 			super.addChild(clip);
 		}
+        public function get button():*{
+            return clip;
+        }
 		override public function set name(text:String):void{
 			label = text;
 			hint = getHint();
@@ -110,26 +121,10 @@
 			return _command1;
 		}
 		private function findCommand():void{
-			var i:int;
-			var l:int;
-			l = commands.length;
-			for(i=0;i<l;i++){
-				if(label == commands[i].name){
-					_command = commands[i].command;
-					return;
-				}
-			}
+            _command = CharisCommandFactory.getCommandByButton(this);
 		}
 		private function findCommand1():void{
-			var i:int;
-			var l:int;
-			l = commands.length;
-			for(i=0;i<l;i++){
-				if(label == commands[i].name){
-					_command1 = commands[i].command1;
-					return;
-				}
-			}
+            _command1 = CharisCommandFactory.getCommandByButton(this);
 		}
 		
 		public function goToFrame(i:int):void{
