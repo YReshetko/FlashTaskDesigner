@@ -62,6 +62,8 @@
 			envLoader.addEventListener(Events.LOAD_MUCH_FILE, LOADER_MUCH_FILE);
 			envLoader.addEventListener(Events.OPEN_MUCH_FILE, LOADER_OPEN_MUCH_FILE);
 
+            envLoader.loadMuchFiles(["Analogy.swf"], "Modules")
+
 			envMenu.addEventListener(Events.LINK_DISPATCH_STATUS, LINK_DISPATCHED);
 
 			taskBase.addEventListener(Events.ADD_SELECTED_TASK, GET_TASK_FOR_ADD_DESIGNER);

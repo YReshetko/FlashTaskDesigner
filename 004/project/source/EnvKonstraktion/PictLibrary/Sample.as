@@ -52,6 +52,10 @@
 		public function getLabel():String{
 			return pictLabel;
 		}
+        public function setLabel(value:String):void{
+            pictLabel = value;
+            field.text = value;
+        }
 		public function getBitmap():Bitmap{
 			var outBitmap:Bitmap = BitmapConverter.copyBitmap(pictBitmap);
 			return outBitmap;
@@ -59,10 +63,10 @@
 		public function getByteArray():ByteArray{
 			return pictByteArray;
 		}
-		
-		
+
+        private var field:TextField;
 		private function initLabel(name:String):void{
-			var field:TextField = new TextField();
+			field = new TextField();
 			var fieldFormat:TextFormat = new TextFormat();
 			fieldFormat.font = linkFont;
 			fieldFormat.size = linkSize;

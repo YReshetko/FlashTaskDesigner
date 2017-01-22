@@ -12,7 +12,7 @@
 		private var blackContainer:Sprite;
 		
 		private var arrSwf:Array = new Array();
-		private var remTarget:LoadSwf;
+		private var remTarget:*;
 		public function SwfController(swfCont:Sprite, color:Sprite, black:Sprite) {
 			super();
 			this.swfContainer = swfCont;
@@ -25,12 +25,18 @@
 			if(content!=null) arrSwf[ID].data = content;
 			arrSwf[ID].content = byteArray;
 			arrSwf[ID].addEventListener(SwfObject.GET_SETTINGS, PUSH_SETTINGS);
+            arrSwf[ID].addEventListener(SwfObject.GET_MODULE_SETTINGS, PUSH_MODULE_SETTINGS);
 		}
 		private function  PUSH_SETTINGS(e:Event):void{
 			remTarget = e.target as LoadSwf;
 			super.dispatchEvent(new Event(OneTask.GET_OBJECT_SETTINGS));
 		}
-		public function get remember():LoadSwf{
+        private function  PUSH_MODULE_SETTINGS(e:Event):void{
+            var target:LoadSwf = e.target as LoadSwf;
+            remTarget = target.innerObject;
+            super.dispatchEvent(new Event(OneTask.GET_OBJECT_SETTINGS));
+        }
+		public function get remember():*{
 			return remTarget;
 		}
 		public function get listPosition():Array{

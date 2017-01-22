@@ -1,13 +1,21 @@
 ﻿package source.Designer {
-	import flash.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Loader;
+import flash.display.Sprite;
 	import flash.display.Graphics;
-	import flash.events.MouseEvent;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.events.TextEvent;
-	import flash.utils.Timer;
+import flash.net.URLLoader;
+import flash.system.LoaderContext;
+import flash.utils.ByteArray;
+import flash.utils.Timer;
 	import source.Designer.Instrument.*;
-	public class AnalogyDes {
-		private var PanelSett;
+	public class AnalogyDes extends EventDispatcher{
+		//private var PanelSett;
 		private static var _W:int = 730;
 		private static var _H:int = 494;
 		private var GlobalX:int;
@@ -15,7 +23,6 @@
 		private var GlobalPoint;
 		private var TargetID:int;
 		private var TIMER:Timer = new Timer(10);
-		private var TextTIMER:Timer = new Timer(10,1);
 		private var Greed:Sprite = new Sprite;
 		private var ObjSprite:Sprite = new Sprite;
 		private var OverSprite:Sprite = new Sprite;
@@ -23,34 +30,115 @@
 		private var TopRight:Array = new Array;
 		private var BootLeft:Array = new Array;
 		private var BootRight:Array = new Array;
-		public function AnalogyDes(spr:Sprite) { 
-			PanelSett = new PanelSettingsModul();
-			PanelSett.Col.text = 3;
-			PanelSett.Row.text = 4;
-			PanelSett.Col.restrict = "0-9";
-			PanelSett.Row.restrict = "0-9";
-			drawGreed(3,4);
+        private var loadedXML:XMLList;
+
+        private var arrContent:Array;
+
+        private var _columns:int = 3;
+        private var _lines = 4;
+		public function AnalogyDes(spr:Sprite) {
+			drawGreed(_columns,_lines);
 			spr.addChild(ObjSprite);
 			spr.addChild(Greed);
-			spr.addChild(PanelSett);
-			PanelSett.x = _W/2;
 			spr.addChild(OverSprite);
 			
 			TIMER.addEventListener(TimerEvent.TIMER, TIMER_EVENT);
-			TextTIMER.addEventListener(TimerEvent.TIMER, TextTIMER_EVENT);
-			PanelSett.Col.addEventListener(TextEvent.TEXT_INPUT, TextINPUT);
-			PanelSett.Row.addEventListener(TextEvent.TEXT_INPUT, TextINPUT);
 		}
+
+        public function setParametrs(ParamXML:XMLList, content:Array){
+            arrContent = content;
+            loadedXML = ParamXML;
+            _columns = parseInt(ParamXML.COLCOUNT);
+            _lines = parseInt(ParamXML.ROWCOUNT);
+            drawGreed(_columns, _lines);
+            loadImagesCollection();
+        }
+
+        private function LoadRightImages(ParamXML:XMLList){
+            //trace(ParamXML.IMG.(@id == 2));
+            var i:int
+            for(i=0;i<TopRight.length;i++){
+                if(ParamXML.IMG.(@id == i)!="null"){
+                    TopRight[i].LoadContent(getImage(ParamXML.IMG.(@id == i)), ParamXML.IMG.(@id == i));
+                }
+            }
+        }
+        private function LoadLeftImages(ParamXML:XMLList){
+            //trace(ParamXML.IMG.(@id == 2));
+            var i:int
+            for(i=0;i<BootLeft.length;i++){
+                if(ParamXML.IMG.(@id == i)!="null"){
+                    BootLeft[i].LoadContent(getImage(ParamXML.IMG.(@id == i)), ParamXML.IMG.(@id == i));
+                }
+            }
+        }
+        private function Transposition(arr:Array){
+            var i:int;
+            for(i=0;i<arr.length;i++){
+                if(arr[i]!=-1){
+                    TopLeft[arr[i]].setContent(BootLeft[i].BitmapCopy());
+                }
+                BootRight[i].setContent(arr[i], TopRight[arr[i]].BitmapCopy());
+                //BootRight[i].setTargetID(arr[i]);
+            }
+        }
+        private function getImage(name:String):BitmapData{
+            var i,l:int;
+            l = bitmapArray.length;
+            for(i=0;i<l;i++){
+                if(name == bitmapArray[i].name){
+                    return bitmapArray[i].bitmap;
+                }
+            }
+            return null;
+        }
+
+        private var currentFileName:String = "";
+        private var currentIndex:int = 0;
+        private var bitmapArray:Array;
+        private function loadImagesCollection(){
+            currentFileName = "";
+            currentIndex = 0;
+            bitmapArray = new Array();
+            processLoadingImages();
+        }
+        private function processLoadingImages():void{
+            if(currentIndex < arrContent.length){
+                currentFileName = arrContent[currentIndex][0];
+                var loader:Loader = new Loader();
+                var context:LoaderContext = new LoaderContext();
+                loader.contentLoaderInfo.addEventListener(Event.COMPLETE, IMAGE_LOAD_COMPLATE);
+                loader.loadBytes(arrContent[currentIndex][1], context);
+            }else{
+                trace(this + " loaded imagex = " + bitmapArray.length);
+                LoadRightImages(loadedXML.TOPRIGHT);
+                LoadLeftImages(loadedXML.BUTLEFT);
+                Transposition(loadedXML.TRANSPOSITION.split(","));
+            }
+        }
+        private function IMAGE_LOAD_COMPLATE(e:Event):void{
+            var value:Bitmap = e.target.content;
+            bitmapArray.push({
+                name : currentFileName,
+                bitmap : value.bitmapData
+            });
+            ++currentIndex;
+            processLoadingImages();
+        }
+
+
 		private function drawGreed(ColCount:int, RowCount:int){
 			Greed.graphics.clear();
 			OverSprite.graphics.clear();
 			Greed.graphics.lineStyle(2,0x000000);
+            clearArray();
 			drawFrame(0,0,ColCount,RowCount, SimpleObj, TopLeft);
 			drawFrame((_W+5)/2,0,ColCount,RowCount, LoadLineObj, TopRight);
 			drawFrame(0,(_H+5)/2,ColCount,RowCount, LoadObj, BootLeft);
 			drawFrame((_W+5)/2,(_H+5)/2,ColCount,RowCount, LineObj, BootRight);
 			EventListeners();
 		}
+
 		private function drawFrame(_X:int, _Y:int, ColCount:int, RowCount:int, CLS:Object, arr:Array){
 			Greed.graphics.drawRect(_X,_Y,(_W-5)/2, (_H-5)/2);
 			Greed.graphics.moveTo(_X,_Y+20);
@@ -58,8 +146,8 @@
 			var i,j:int;
 			var deltaX:Number = ((_W-5)/2)/ColCount;
 			var deltaY:Number = ((_H-5)/2-20)/RowCount;
-			var arrX:Array = new Array;
-			var arrY:Array = new Array;
+			var arrX:Array = new Array();
+			var arrY:Array = new Array();
 			for(i=1;i<ColCount;i++){
 				Greed.graphics.moveTo(_X+deltaX*i,_Y+20);
 				Greed.graphics.lineTo(_X+deltaX*i,_Y+(_H-5)/2);
@@ -73,8 +161,6 @@
 			}
 			arrY.push((_Y+20)+deltaY*(RowCount-1));
 			var ID:int;
-			//trace("arrX = "+arrX);
-			//trace("arrY = "+arrY);
 			for(i=0;i<ColCount;i++){
 				for(j=0;j<RowCount;j++){
 					ID = arr.length;
@@ -102,7 +188,6 @@
 			POINT.startDrag(true);
 			var i:int;
 			for(i=0;i<BootRight.length;i++){
-				//trace(BootRight[i].getID());
 				if(BootRight[i].getID() == _id){
 					BootRight[i].clearContent();
 					TopLeft[_id].clearContent();
@@ -163,29 +248,22 @@
 			}
 			return flag;
 		}
-		private function TextINPUT(e:TextEvent){
-			TextTIMER.start();
-		}
-		private function TextTIMER_EVENT(e:TimerEvent){
-			var COL:int = parseInt(PanelSett.Col.text);
-			var ROW:int = parseInt(PanelSett.Row.text);
-			if(COL>15){
-				COL = 15;
-			}
-			if(COL<1){
-				COL = 1;
-			}
-			if(ROW>15){
-				ROW = 15;
-			}
-			if(ROW<1){
-				ROW = 1;
-			}
-			clearArray();
-			drawGreed(COL,ROW);
-			PanelSett.Col.text = COL.toString();
-			PanelSett.Row.text = ROW.toString();
-		}
+
+        public function set columns(value:int):void{
+            _columns = value;
+            drawGreed(_columns,_lines);
+        }
+        public function get columns():int{
+            return _columns;
+        }
+
+        public function set lines(value:int):void{
+            _lines = value;
+            drawGreed(_columns,_lines);
+        }
+        public function get lines():int{
+            return _lines;
+        }
 		public function clearArray(){
 			var i:int;
 			for(i=0;i<TopRight.length;i++){
@@ -209,8 +287,8 @@
 			var s:String = new String;
 			var i:int;
 			trace(this + ': Start Getting Modul Settings');
-			s = '<COLCOUNT>'+PanelSett.Col.text+'</COLCOUNT>';
-			s += '\r\n<ROWCOUNT>'+PanelSett.Row.text+'</ROWCOUNT>';
+            s = '<COLCOUNT>'+_columns+'</COLCOUNT>';
+			s += '\r\n<ROWCOUNT>'+_lines+'</ROWCOUNT>';
 			s += '\r\n<BUTLEFT>';
 			trace(this + ': Stap 1 - Complate');
 			for(i=0;i<BootLeft.length;i++){
@@ -238,5 +316,17 @@
 			trace(this + ': Complate Getting Modul Settings');
 			return s;
 		}
+        public function get listSettings():XMLList{
+            var outXml:XMLList = new XMLList('<PACKAGE/>');
+            outXml.@label = 'МОДУЛЬ АНАЛОГИЯ';
+            var columnsList:XMLList = new XMLList('<FIELD label="столбцов" type="number" variable="columns" width="40">' + this.columns.toString() + '</FIELD>');
+            var linesList:XMLList = new XMLList('<FIELD label="строк" type="number" variable="lines" width="40">' + this.lines.toString() + '</FIELD>');
+
+            var blockList:XMLList = new XMLList('<BLOCK label="ячейки"/>');
+            blockList.appendChild(columnsList);
+            blockList.appendChild(linesList);
+            outXml.appendChild(blockList);
+            return outXml;
+        }
 	}
 }

@@ -70,7 +70,7 @@
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadBytesComplete);
 		}
 		private function onLoadBytesComplete(e:Event){
-			methodLoading(e.target.content, fileReference.name);
+			methodLoading(e.target.content.bitmapData, fileReference.name);
 			//	создаётся элемент растрового изображения и содержимое загрузчика переносится в него
 			/*image = Bitmap(e.target.content);
 			//trace(e.target.parent.parent);

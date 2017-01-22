@@ -80,6 +80,13 @@
 				//	ЭТАП 1: Проверяем все байтовые массивы библиотеки на совпадение 
 				//	с текущим загруженным объектом
 				for(j=0;j<k;j++){
+                    if(inFileName.indexOf("Analogy")!=-1 && inFileName.indexOf("swf")!=-1){
+                        if(inFileName!="Analogy.swf"){
+                            outArray.push([inFileName,"Analogy.swf"]);
+                        }
+                        flag = false;
+                        break;
+                    }
 					//	Сохраняем параметры текущего объекта библиотеки (имя и байтовый массив)
 					sampleFileName = arrSample[j].getLabel();
 					sampleFileBA = arrSample[j].getByteArray();
@@ -128,6 +135,19 @@
 		}
 		//	Метод добавления в библиотеку нового экземпляра контента
 		private function setNewSample(name:String, bitmap:*, byteArray:ByteArray):void{
+            if(name.indexOf("Analogy")!=-1 && name.indexOf("swf")!=-1){
+                var i:int;
+                var l:int;
+                var currentName:String;
+                l = arrSample.length;
+                for(i=0;i<arrSample.length;i++){
+                    currentName = arrSample[i].getLabel();
+                    if(currentName.indexOf("Analogy")!=-1 && currentName.indexOf("swf")!=-1){
+                        arrSample[i].setLabel(name);
+                        return;
+                    }
+                }
+            }
 			//	Длина массива 
 			var ID:int = arrSample.length;
 			//	Создаём новый экземпляр лейбла для библиотеки

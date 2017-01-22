@@ -1,12 +1,15 @@
 ﻿package source {
 	import flash.display.Sprite;
-	import flash.xml.*;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.xml.*;
 	import source.Designer.*;
 	import source.Player.*;
 	
 	// Параметры SWF-файла
 	[SWF(width="730", height="500")]
 	public class Main extends Sprite{
+        public static const GET_MODULE_SETTINGS:String = "onGetModuleSettings";
 		private var typeSwf:String = new String;
 		private var PartDesigin;
 		private var PartPlayer;
@@ -24,6 +27,7 @@
 			switch(environment){
 				case "Designer":
 				PartDesigin = new AnalogyDes(this);
+                this.addEventListener(MouseEvent.MOUSE_DOWN, ON_DESIGNER_MOUSE_DOWN);
 				//	Запуск класса выполняющего роль конструктора
 				break;
 				case "Player":
@@ -48,5 +52,18 @@
 		public function getAnswer():Boolean{
 			return PartPlayer.getAswer();
 		}
-	}	
+        public function setDessigned(xml:XMLList, content:Array){
+//            trace(this + " Input xml : \n" + xml);
+//            trace(this + " Input content : \n" + content);
+            PartDesigin.setParametrs(xml, content);
+        }
+
+        private function ON_DESIGNER_MOUSE_DOWN(event:MouseEvent):void{
+            //trace(this + " Click on module scene");
+            super.dispatchEvent(new Event(GET_MODULE_SETTINGS));
+        }
+        public function get objectToSettings():AnalogyDes{
+            return PartDesigin;
+        }
+	}
 }

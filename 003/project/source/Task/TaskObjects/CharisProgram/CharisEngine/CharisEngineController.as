@@ -23,7 +23,7 @@
 			trace(this + " print commands");
 			if(robot == null) {
 				trace(this + " Error: engine has no robot");
-				return;
+                throw new Error(this + " You must set robot for executing commands");
 			}
 			var command:Vector.<IRobotCommand> = parser.getCommands(robot);
 			var i:int;

@@ -8,6 +8,7 @@
 	import source.DesignerMain;
 
 	public class SwfObject extends EventDispatcher{
+        public static const GET_MODULE_SETTINGS:String = "onGetModuleSettings";
 		public static var GET_SETTINGS:String = 'onGetSettings';
 		private var swfContainer:Sprite;
 		private var colorContainer:Sprite;
@@ -91,6 +92,7 @@
 						colorContainer.removeChild(colorTan);
 					}
 					if(swfType == 'ModulSWF'){
+                        trace(this + " Init swf module, set type and add GET_MODULE_SETTINGS listener");
 						simpleObj.setEnvironment("Designer");
 					}
 				}
@@ -245,6 +247,7 @@
 			}
 			if(type == "ModulSWF"){
 				trace(this + " OUT XML = " + paramXML.SETTINGS);
+                (simpleObj as Sprite).addEventListener(GET_MODULE_SETTINGS, ON_MODULE_SETTINGS);
 				swfSpr.x = 6;
 				swfSpr.y = 6;
 			}else{
@@ -252,11 +255,11 @@
 			}
 		}
 		public function setDessigned(xml:XMLList, content:Array):void{
-			try{
+//			try{
 				simpleObj.setDessigned(xml, content);
-			}catch(error:Error){
+			/*}catch(error:Error){
 				trace(this + ': error load content to swf ' + error);
-			}
+			} */
 		}
 		private function duplicateObject(exemplar:Sprite):Bitmap {
 			var bmpData:BitmapData = new BitmapData(exemplar.width, exemplar.height);
@@ -329,5 +332,22 @@
 			outXml.appendChild(blockList);
 			return outXml;
 		}
+
+        public function get innerObject():*{
+            var out:*;
+            try{
+                out = simpleObj.objectToSettings;
+                return out;
+            }
+            catch (error:Error)
+            {
+                trace(this + " Can't take object to settings in this swf module");
+            }
+
+        }
+        private function ON_MODULE_SETTINGS(event:Event):void{
+            //trace(this + " Getting inner module settings ");
+            super.dispatchEvent(new Event(GET_MODULE_SETTINGS));
+        }
 	} 
 }

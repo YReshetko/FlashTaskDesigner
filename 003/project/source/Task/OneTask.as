@@ -135,7 +135,7 @@
 			}
 		}
 		private function addObject(inXml:XMLList, arrData:Array):void{
-			trace(this + ': IN DATA ARRAY = ' + arrData);
+			//trace(this + ': IN DATA ARRAY = ' + arrData);
 			var str:String;
 			var outXml:XMLList;
 			var ID:int;

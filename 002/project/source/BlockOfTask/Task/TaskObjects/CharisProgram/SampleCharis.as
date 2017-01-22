@@ -235,7 +235,11 @@ package source.BlockOfTask.Task.TaskObjects.CharisProgram {
 			super.dispatchEvent(new Event(SeparatTask.CHECK_TASK));
 		}
 		private function ON_USER_SIMULATION(event:Event):void{
-			
+            if(showMisstakes){
+
+            } else{
+
+            }
 		}
 		private function parse(xml:XMLList):void{
 			fileName = xml.@content;

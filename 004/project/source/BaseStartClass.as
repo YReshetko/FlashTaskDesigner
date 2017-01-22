@@ -167,6 +167,7 @@
 		}
 		private function SET_SCENE_PERCENT(event:Event):void{
 			designer.sizeMainScene = envMenu.percent;
+
 		}
 		
 		public function closeWindow():void{

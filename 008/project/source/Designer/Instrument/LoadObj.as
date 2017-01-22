@@ -1,10 +1,14 @@
 ﻿package source.Designer.Instrument {
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
+import flash.display.Loader;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	public class LoadObj extends Sprite{
+import flash.system.LoaderContext;
+
+public class LoadObj extends Sprite{
 		private var ID:int;
 		private var loadImg;
 		private var WIDTH:Number;
@@ -36,13 +40,19 @@
 		public function LoadContent(e, NAME:String){
 			fileName = NAME;
 			CONTENT = e;
-			IMG = BitmapCopy();
-			contentSprite.addChild(IMG);
-			IMG.height = HEIGHT;
-			IMG.width = WIDTH;
+            try{
+                IMG = BitmapCopy();
+                contentSprite.addChild(IMG);
+                IMG.height = HEIGHT;
+                IMG.width = WIDTH;
+            }catch(e:Error){
+                trace(e.getStackTrace());
+            }
 		}
+
+
 		public function BitmapCopy():Bitmap{
-			var image:Bitmap = Bitmap(CONTENT);
+			var image:Bitmap = new Bitmap(CONTENT);
 			var copyImg:BitmapData = new BitmapData(CONTENT.width, CONTENT.height,true,0xffffffff);
 			copyImg.draw(image,new Matrix());
 			var outImage:Bitmap = new Bitmap(copyImg);
