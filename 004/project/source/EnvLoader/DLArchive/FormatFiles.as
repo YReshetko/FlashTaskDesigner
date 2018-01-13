@@ -2,14 +2,14 @@
 	
 	public class FormatFiles {
 
-		public static function getASPFile(width:Number, height:Number):String{
+		public static function getASPFile(width:Number, height:Number, isUseFlash:Boolean, isUseHtml5:Boolean):String{
 			var outString:String = '<!--#include virtual="engprocs.inc"-->';
 			outString += '\r\n';
 			outString += '<p></p>';
 			outString += '\r\n';
 			outString += '<div align="center">';
 			outString += '\r\n';
-			outString += '<%flash("images/tangram/tangram.swf", 1, '+width.toString()+', '+height.toString()+',0,"")%>';
+			outString += '<%provide_player("images/tangram/tangram.swf", 1, '+width.toString()+', '+height.toString()+',0,"",'+isUseFlash+','+isUseHtml5+')%>';
 			outString += '\r\n';
 			outString += '</div>';
 			return outString;

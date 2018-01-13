@@ -1,6 +1,8 @@
 ﻿package source.EnvLoader.DLArchive {
 	import flash.display.Sprite;
-	import source.EnvUtils.EnvDraw.Figure;
+
+import source.Components.ButtonMark;
+import source.EnvUtils.EnvDraw.Figure;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.text.TextFieldAutoSize;
@@ -43,6 +45,10 @@
 		private var fieldTaskType:TextField = new TextField();
 		private var fieldCheckBut:TextField = new TextField();
 		private var fieldNumArchive:TextField = new TextField();
+
+        private var markUseFlash:ButtonMark = new ButtonMark("Flash player");
+        private var markUseHtml5:ButtonMark = new ButtonMark("HTML5 player");
+
 		private var file:File;
 		
 		private var format:TextFormat = new TextFormat();
@@ -122,6 +128,16 @@
 		public function get winrar():String{
 			return winRarPath;
 		}
+        public function get useFlash():Boolean{
+            var out:Boolean = true;
+            if (markUseFlash.select || markUseHtml5.select){
+                out = markUseFlash.select;
+            }
+            return out;
+        }
+        public function get useHtml5():Boolean{
+            return markUseHtml5.select;
+        }
 		
 		//	Инициализация внешнего вида формы
 		private function initFormat():void{
@@ -171,8 +187,17 @@
 			butWinRar.y = 26*numLine;
 			butWinRar.x = fieldNumArchive.x + fieldNumArchive.width + 30;
 			fieldNumArchive.restrict = '0-9';
-			
-			numLine = 8;
+
+            numLine = 7;
+            super.addChild(markUseFlash);
+            markUseFlash.y = 26*numLine;
+            markUseFlash.x = 0;
+            markUseFlash.select = true;
+            super.addChild(markUseHtml5);
+            markUseHtml5.y = 26*numLine;
+            markUseHtml5.x = markUseFlash.x + markUseFlash.width + 20;
+
+			numLine = 9;
 			butSave = new SimpleButton(100, 22, 'Сохранить');
 			butClose = new SimpleButton(100, 22, 'Закрыть');
 			
@@ -280,18 +305,26 @@
 			
 			if(formSO.data.winrar == undefined) winRarPath = defaultWinRARPath;
 			else winRarPath = formSO.data.winrar.toString();
+
+            if(formSO.data.isUseFlash != undefined) markUseFlash.select = formSO.data.isUseFlash;
+
+            if(formSO.data.isUseHtml5 != undefined) markUseHtml5.select = formSO.data.isUseHtml5;
 		}
 		private function rememberSharedObjects():void{
 			delete formSO.data.archive;
 			delete formSO.data.name;
 			delete formSO.data.group;
 			delete formSO.data.winrar;
-			
+            delete formSO.data.isUseFlash;
+            delete formSO.data.isUseHtml5;
+
 			formSO.data.archive = fieldNumArchive.text;
 			formSO.data.name = fieldAuthorName.text;
 			formSO.data.group = fieldGroup.text;
 			formSO.data.winrar = winRarPath;
-			
+			formSO.data.isUseFlash = markUseFlash.select;
+			formSO.data.isUseHtml5 = markUseHtml5.select;
+
 			try{
 				formSO.flush();
 			}catch(e:Error){}

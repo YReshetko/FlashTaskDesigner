@@ -120,7 +120,7 @@
 			currentFile.createDirectory();
 			currentFile = currentFile.resolvePath(currentFile.nativePath + '/task.asp');
 			
-			var asp:String = FormatFiles.getASPFile(playerW, playerH);
+			var asp:String = FormatFiles.getASPFile(playerW, playerH, dlForm.useFlash, dlForm.useHtml5);
 			var cfg:String = FormatFiles.getCFGFile();
 			var out:String = FormatFiles.getOUTFile(dlForm.numPoint);
 			var xml:String = FormatFiles.getXMLFile(dlForm.rname, dlForm.ename, dlForm.author, dlForm.group, dlForm.date, dlForm.numPoint);
@@ -255,7 +255,7 @@
 				currentFile = currentFile.resolvePath(currentFile.nativePath + '/' + currentID.toString());
 				currentFile.createDirectory();
 				currentFile = currentFile.resolvePath(currentFile.nativePath + '/task.asp');
-				var asp:String = FormatFiles.getASPFile(playerW, playerH);
+				var asp:String = FormatFiles.getASPFile(playerW, playerH, dlForm.useFlash, dlForm.useHtml5);
 				var cfg:String = FormatFiles.getCFGFile();
 				var out:String = FormatFiles.getOUTFile(1);
 				var xml:String = FormatFiles.getXMLFile(getNameTask(difficultContent[currentID][0]), '', dlForm.author, dlForm.group, dlForm.date, 1);
